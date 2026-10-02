@@ -1,12 +1,17 @@
-# GitHub Project Sync
-
-Automatically pulls your starred GitHub repos and displays them on your portfolio as live project cards, no manual updates needed.
+# I got tired of updating my projects on GitHub and my portfolio separately, so I built a script that syncs them automatically.
 
 ## Demo
 
 ![Demo: pushing to GitHub and the project appearing on the portfolio](./demo.gif)
 
 *Replace `demo.gif` with your own recording, e.g. screen-record a push, then the card appearing.*
+
+## How the it works
+
+- A project shows **"In Progress"** if it's been pushed to within the last 7 days, and **"Live"** otherwise. This is based on each repo's `pushed_at` timestamp from GitHub.
+- To change the 7-day window, edit `DAYS_UNTIL_LIVE` at the top of `index.html`.
+- **Live link detection**: each card links to the repo's actual deployed URL (Vercel, Netlify, etc.) by reading GitHub's `homepage` field on the repo. If that's not set, it falls back to the repo's GitHub Pages URL.
+- Only **starred** repos are pulled in, so you control exactly which projects show up by starring the ones you want featured.
 
 ## The Files
 
@@ -23,10 +28,3 @@ Automatically pulls your starred GitHub repos and displays them on your portfoli
    ```
    Generate a token at GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens, scoped to **Public repositories (read-only)**. This raises your API rate limit from 60 requests/hour to 5,000/hour.
 3. **Deploy** — drag the folder into Netlify, or connect the repo for auto-deploys. No build step, no `npm install`.
-
-## How the status works
-
-- A project shows **"In Progress"** if it's been pushed to within the last 7 days, and **"Live"** otherwise. This is based on each repo's `pushed_at` timestamp from GitHub.
-- To change the 7-day window, edit `DAYS_UNTIL_LIVE` at the top of `index.html`.
-- **Live link detection**: each card links to the repo's actual deployed URL (Vercel, Netlify, etc.) by reading GitHub's `homepage` field on the repo. If that's not set, it falls back to the repo's GitHub Pages URL.
-- Only **starred** repos are pulled in, so you control exactly which projects show up by starring the ones you want featured.
