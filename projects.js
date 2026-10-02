@@ -1,5 +1,20 @@
 // src/data/projectData.js
 
+/**
+ * ⚠️ TOKEN REQUIRED
+ * This fetches from GitHub's API, which rate-limits unauthenticated
+ * requests to 60/hour (easy to hit, since this makes 3 calls per repo).
+ * A free token raises that to 5,000/hour.
+ *
+ * To run this yourself:
+ *   1. Generate a token: GitHub → Settings → Developer settings →
+ *      Personal access tokens → Fine-grained tokens → scope it to
+ *      "Public repositories" (read-only).
+ *   2. Add it as an env variable, never hardcode it in this file:
+ *      VITE_GITHUB_TOKEN=your_token_here   (in a local .env, gitignored)
+ *      or as an environment variable in your host's dashboard
+ *      (Netlify/Vercel → Site settings → Environment variables).
+ */
 const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
 
 const githubHeaders = {
@@ -9,7 +24,7 @@ const githubHeaders = {
 
 export const fetchGitHubProjects = async () => {
   try {
-    const response = await fetch("https://api.github.com/users/ifechukwuokuma/repos", {
+    const response = await fetch("https://api.github.com/users/YOUR_USERNAME/repos", {
       headers: githubHeaders,
     });
     if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
@@ -28,7 +43,7 @@ export const fetchGitHubProjects = async () => {
         try {
           // Fetch README
           const readmeRes = await fetch(
-            `https://api.github.com/repos/ifechukwuokuma/${repo.name}/readme`,
+            `https://api.github.com/repos/YOUR_USERNAME/${repo.name}/readme`,
             { headers: githubHeaders }
           );
 
@@ -42,7 +57,7 @@ export const fetchGitHubProjects = async () => {
               let imgUrl = imgMatch[1].trim();
 
               if (!imgUrl.startsWith("http")) {
-                imgUrl = `https://raw.githubusercontent.com/ifechukwuokuma/${repo.name}/${repo.default_branch}/${imgUrl.replace(/^\.?\//, "")}`;
+                imgUrl = `https://raw.githubusercontent.com/YOUR_USERNAME/${repo.name}/${repo.default_branch}/${imgUrl.replace(/^\.?\//, "")}`;
               }
 
               thumbnail = imgUrl;
@@ -72,7 +87,7 @@ export const fetchGitHubProjects = async () => {
         // Fetch languages
         try {
           const langsRes = await fetch(
-            `https://api.github.com/repos/ifechukwuokuma/${repo.name}/languages`,
+            `https://api.github.com/repos/YOUR_USERNAME/${repo.name}/languages`,
             { headers: githubHeaders }
           );
           if (langsRes.ok) {
@@ -90,7 +105,7 @@ export const fetchGitHubProjects = async () => {
           stars: repo.stargazers_count,
           branch: repo.default_branch,
           repoUrl: repo.html_url,
-          liveUrl: repo.homepage || `https://ifechukwuokuma.github.io/${repo.name}`,
+          liveUrl: repo.homepage || `https://YOUR_USERNAME.github.io/${repo.name}`,
           thumbnail: thumbnail || "/fallback-thumbnail.png",
           status: repo.pushed_at,
           languages,
