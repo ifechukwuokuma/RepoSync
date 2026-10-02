@@ -1,28 +1,23 @@
-// projects.js
-// Fetches your public GitHub repos and shapes them into project cards.
-// No framework, no build step — just fetch + transform.
+// src/data/projectData.js
 
-/**
- * @param {string} username   Your GitHub username
- * @param {string} token      A fine-grained GitHub token, "Public repositories" read-only access
- * @returns {Promise<Array>}  Array of project objects ready to render
- */
-export const fetchGitHubProjects = async (username, token) => {
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    Accept: "application/vnd.github+json",
-  };
+const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
 
+const githubHeaders = {
+  Authorization: `Bearer ${GITHUB_TOKEN}`,
+  Accept: "application/vnd.github+json",
+};
+
+export const fetchGitHubProjects = async () => {
   try {
-    const response = await fetch(`https://api.github.com/users/${username}/repos`, {
-      headers,
+    const response = await fetch("https://api.github.com/users/ifechukwuokuma/repos", {
+      headers: githubHeaders,
     });
     if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
     const data = await response.json();
 
     // Filter only starred repos
-    const starredRepos = data.filter((repo) => repo.stargazers_count > 0);
+    const starredRepos = data.filter(repo => repo.stargazers_count > 0);
 
     const projects = await Promise.all(
       starredRepos.map(async (repo) => {
@@ -33,8 +28,8 @@ export const fetchGitHubProjects = async (username, token) => {
         try {
           // Fetch README
           const readmeRes = await fetch(
-            `https://api.github.com/repos/${username}/${repo.name}/readme`,
-            { headers }
+            `https://api.github.com/repos/ifechukwuokuma/${repo.name}/readme`,
+            { headers: githubHeaders }
           );
 
           if (readmeRes.ok) {
@@ -47,7 +42,7 @@ export const fetchGitHubProjects = async (username, token) => {
               let imgUrl = imgMatch[1].trim();
 
               if (!imgUrl.startsWith("http")) {
-                imgUrl = `https://raw.githubusercontent.com/${username}/${repo.name}/${repo.default_branch}/${imgUrl.replace(/^\.?\//, "")}`;
+                imgUrl = `https://raw.githubusercontent.com/ifechukwuokuma/${repo.name}/${repo.default_branch}/${imgUrl.replace(/^\.?\//, "")}`;
               }
 
               thumbnail = imgUrl;
@@ -57,16 +52,9 @@ export const fetchGitHubProjects = async (username, token) => {
             if (!description) {
               const textLines = decoded
                 .split("\n")
-                .map((line) => line.trim())
-                .filter(
-                  (line) =>
-                    line &&
-                    !line.startsWith("#") &&
-                    !line.startsWith("!") &&
-                    !line.startsWith("[") &&
-                    !line.startsWith("<")
-                )
-                .map((line) => line.replace(/[*_`]/g, ""));
+                .map(line => line.trim())
+                .filter(line => line && !line.startsWith("#") && !line.startsWith("!") && !line.startsWith("[") && !line.startsWith("<"))
+                .map(line => line.replace(/[*_`]/g, ""));
 
               description = textLines.join(" ") || "No description provided.";
             }
@@ -84,8 +72,8 @@ export const fetchGitHubProjects = async (username, token) => {
         // Fetch languages
         try {
           const langsRes = await fetch(
-            `https://api.github.com/repos/${username}/${repo.name}/languages`,
-            { headers }
+            `https://api.github.com/repos/ifechukwuokuma/${repo.name}/languages`,
+            { headers: githubHeaders }
           );
           if (langsRes.ok) {
             const langsData = await langsRes.json();
@@ -102,7 +90,7 @@ export const fetchGitHubProjects = async (username, token) => {
           stars: repo.stargazers_count,
           branch: repo.default_branch,
           repoUrl: repo.html_url,
-          liveUrl: repo.homepage || `https://${username}.github.io/${repo.name}`,
+          liveUrl: repo.homepage || `https://ifechukwuokuma.github.io/${repo.name}`,
           thumbnail: thumbnail || "/fallback-thumbnail.png",
           status: repo.pushed_at,
           languages,
