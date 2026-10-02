@@ -19,12 +19,7 @@
 - **`index.html`** — renders those projects as cards on the page, shows a skeleton loading state while fetching, and opens a detail modal when a card is clicked.
 
 ## Setup (3 steps)
-
-1. **Add both files** to your project — `projects.js` and `index.html` in the same folder.
-2. **Set your username and token** at the top of `index.html`:
-   ```js
-   const GITHUB_USERNAME = "your-username-here";
-   const GITHUB_TOKEN = "your-fine-grained-token-here";
-   ```
-   Generate a token at GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens, scoped to **Public repositories (read-only)**. This raises your API rate limit from 60 requests/hour to 5,000/hour.
-3. **Deploy** — drag the folder into Netlify, or connect the repo for auto-deploys. No build step, no `npm install`.
+ 
+1. **Add both files** to your project — `project.js` and `index.jsx`, plus `npm install react lucide-react` if you don't already have them.
+2. **Set your username and token.** In `project.js`, replace every `YOUR_USERNAME` with your GitHub username. For the token, generate one at GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens, scoped to **Public repositories (read-only)** — this raises your API rate limit from 60 requests/hour to 5,000/hour. Add it as an environment variable, `VITE_GITHUB_TOKEN` (or your bundler's equivalent prefix), never hardcoded in the file.
+3. **Deploy** — if you're on Netlify or Vercel, add the token as an environment variable in their dashboard (Site settings → Environment variables), then deploy as usual.
