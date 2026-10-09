@@ -1,4 +1,4 @@
-# I got tired of updating my projects on GitHub and my portfolio separately, so I built a script that automatically syncs them, keeping everything up to date without the extra manual work.
+# I got tired of updating my projects on GitHub and my portfolio separately, so I built a script that automatically syncs them, saving time and keeping everything up to date with less manual work.
 
 ## Demo
 
