@@ -79,10 +79,10 @@ export default async () => {
             // README text first, then the GitHub About text, then a default
             description = getReadmeDescription(decoded) || description || "No description provided.";
 
-            // Keep descriptions card sized
+            // Keep descriptions card sized. Long text is cut and ends with "..."
             const maxLength = 188;
             if (description.length > maxLength) {
-              description = description.slice(0, maxLength);
+              description = description.slice(0, maxLength).trimEnd() + "...";
             }
           }
         } catch (err) {
